@@ -3,18 +3,19 @@ pragma solidity ^0.8.17;
 
 interface IBounty {
 
-    struct Operation {
-        address contractAddress;
-        string functionName;
-    }
-
     struct Bounty {
         uint256 bountyId;
         string name;
         string description;
         bytes32 rewardType;
         uint256 reward;
-        Operation operation;
+        address rewardAddress;
+        address payoutFrom;
+    }
+
+    struct BountyBalance {
+        address ownerOf;
+        uint256 balance;
     }
 
     struct Commission {

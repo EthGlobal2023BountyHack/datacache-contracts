@@ -12,6 +12,7 @@ import {IBounty} from "./interfaces/IBounty.sol";
 import "./lib/GenesisUtils.sol";
 import "./interfaces/ICircuitValidator.sol";
 import "./verifiers/ZKPVerifier.sol";
+import "hardhat/console.sol";
 
 /**
  * @title CampaignMarket
@@ -47,8 +48,17 @@ contract CampaignMarket is
     /// @dev The bounty ids
     uint256 public bountyIds = 0;
 
+    /// @dev The emergency withdraw address
+    address public treasury;
+
     /// @dev Address id to commission info
     mapping(address => Commission[]) public commissions;
+
+    /// @dev Bounty id to Bounty
+    mapping(uint256 => Bounty) public bounties;
+
+    /// @dev Bounty id to bounty ownership
+    mapping(uint256 => BountyBalance) public bountyBalance;
 
     constructor(
         address _trustedForwarder
@@ -57,6 +67,9 @@ contract CampaignMarket is
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(OWNER_ROLE, _msgSender());
         _setupRole(BOUNTY_MANAGER, _msgSender());
+
+        // Setup emergency receiver
+        treasury = payable(_msgSender());
     }
 
     // ========================================
@@ -70,12 +83,14 @@ contract CampaignMarket is
      * @param rewardType The reward type as a string, "ERC20_REWARD", "ERC721REWARD", "ERC1155_REWARD"
      * @param reward The reward value
      * @param tokenAddress token address for bounty collateral, zero address if native token
+     * @param totalRewards The total rewards that are claimable
      */
     function createBounty(
         string calldata name,
         string calldata description,
         string calldata rewardType,
         uint256 reward,
+        uint256 totalRewards,
         address tokenAddress
     ) external payable {
         bytes32 bountyType = keccak256(abi.encodePacked(rewardType));
@@ -84,13 +99,80 @@ contract CampaignMarket is
         uint256 nextBountyId = bountyIds++;
 
         if(bountyType == ERC20_REWARD){
-            // TODO logic for erc20
+            // Process transferring token to escrow
+            if(tokenAddress == address(0)){
+                require(msg.value >= totalRewards, "Must pass at least one bounty worth of collateral");
+                (bool sent, bytes memory data) = payable(address(this)).call{value: msg.value}("");
+                // Store escrow balances by bounty id
+                require(sent, "Failed to send Ether");
+            } else {
+                IERC20(tokenAddress).transferFrom(
+                    _msgSender(),
+                    address(this),
+                    totalRewards
+                );
+            }
+
+            // Add to bounty balance
+            bountyBalance[nextBountyId] = BountyBalance({
+                ownerOf: _msgSender(),
+                balance: totalRewards
+            });
+
+            bounties[nextBountyId] = Bounty({
+                bountyId: nextBountyId,
+                name: name,
+                description: description,
+                rewardType: bountyType,
+                reward: reward,
+                rewardAddress: tokenAddress,
+                payoutFrom: address(this)
+            });
+
         } else if(bountyType == ERC721_REWARD){
             // TODO logic for erc721
         } else if(bountyType == ERC1155_REWARD){
             // TODO logic for erc1155
         }
 
+    }
+
+    /// @notice Returns bounty owner
+    function getBountyOwner(uint256 bountyId) external returns (address) {
+        return bountyBalance[bountyId].ownerOf;
+    }
+
+    /// @notice Returns bounty balance
+    function getRemainingBounty(uint256 bountyId) external returns (uint256) {
+        return bountyBalance[bountyId].balance;
+    }
+
+    /// @notice Returns all bounties
+    function getAllBounties() external view returns (bytes[] memory) {
+        bytes[] memory allBounties = new bytes[](bountyIds);
+
+        Bounty memory current;
+
+        for (uint256 i; i < bountyIds;) {
+            current = bounties[i];
+
+            allBounties[i] = abi.encode(
+                current.bountyId,
+                current.name,
+                current.description,
+                current.reward,
+                current.rewardType,
+                bountyBalance[i].balance,
+                current.rewardAddress,
+                current.payoutFrom
+            );
+
+            unchecked {
+                ++i;
+            }
+        }
+
+        return allBounties;
     }
 
     // ========================================
@@ -119,6 +201,22 @@ contract CampaignMarket is
         uint256 _bountyId
     ) internal {
 
+    }
+
+    /**
+     * @notice Verify commission for a particular bounty
+     * @dev Set by a trusted bounty manager
+     * @param _bountyId The bounty id
+     * @param _receiver The address for the commission
+     * @param _amount The amount of value to apply
+     */
+    function verifyCommission(
+        uint256 _bountyId,
+        address _receiver,
+        uint256 _amount
+    ) external onlyRole(BOUNTY_MANAGER) {
+        // Update commissions for particular receiver and bounty
+        emit CommissionVerified(_bountyId, _amount);
     }
 
     /**
@@ -156,20 +254,42 @@ contract CampaignMarket is
     }
 
     /**
-     * @notice Verify commission for a particular bounty
-     * @dev Set by a trusted bounty manager
-     * @param _bountyId The bounty id
-     * @param _receiver The address for the commission
-     * @param _amount The amount of value to apply
+     * @dev Issues tokens only if there is a sufficient balance in the contract
+     * @param contractAddress - Contract address
+     * @param recipient - Address of recipient
+     * @param amount - Amount in wei to transfer
      */
-    function verifyCommission(
-        uint256 _bountyId,
-        address _receiver,
-        uint256 _amount
-    ) external onlyRole(BOUNTY_MANAGER) {
-        // Update commissions for particular receiver and bounty
-        emit CommissionVerified(_bountyId, _amount);
+    function _safeTransferRewards(address contractAddress, address recipient, uint256 amount) internal {
+        uint256 balance = IERC20(contractAddress).balanceOf(address(this));
+        if (amount <= balance) {
+            IERC20(contractAddress).transfer(recipient, amount);
+        }
     }
+
+    /**
+     * @notice Withdraws any tokens from the contract
+     * @param contractAddress - Token contract address
+     * @param amount - Amount in wei to withdraw
+     */
+    function emergencyWithdrawERC20(address contractAddress, uint256 amount) external onlyRole(OWNER_ROLE) {
+        _safeTransferRewards(contractAddress, _msgSender(), amount);
+    }
+
+    /// @notice Withdraws funds from contract
+    function emergencyWithdraw() public onlyOwner {
+        uint256 balance = address(this).balance;
+        (bool success, ) = treasury.call{value: balance}("");
+        require(success, "Unable to withdraw native token");
+    }
+
+    /**
+     * @notice Sets the treasury recipient
+     * @param _treasury The treasury address
+     */
+    function setTreasury(address _treasury) external onlyRole(OWNER_ROLE) {
+        treasury = payable(_treasury);
+    }
+
 
     // ========================================
     // Proof verification
@@ -219,6 +339,10 @@ contract CampaignMarket is
             // TODO Update commission payout to verified
         }
     }
+
+    receive() external payable {}
+
+    fallback() external payable {}
 
     // ========================================
     // Native meta transactions

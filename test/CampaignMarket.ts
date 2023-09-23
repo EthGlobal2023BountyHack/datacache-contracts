@@ -139,8 +139,63 @@ describe("CampaignMarket", function () {
         await loadFixture(setup));
     });
 
-    it("Should be able to add a commission", () => {
-      const createBountyTx = "";
+    it("Should be able to add a bounty", async () => {
+
+      const createBountyTx = await campaignMarket.createBounty(
+          "Bounty 1",
+          "Bounty 1 Description",
+          "ERC20_REWARD",
+          ethers.utils.parseEther('1'),
+          ethers.utils.parseEther('500'),
+          ethers.constants.AddressZero,
+          {
+            value: ethers.utils.parseEther('500')
+          }
+      );
+
+      await createBountyTx.wait();
+
+      const balance = await ethers.provider.getBalance(campaignMarket.address);
+
+      expect(balance).to.be.equal(ethers.utils.parseEther('500'));
+
+      const currentBounty = await campaignMarket.bountyBalance(0);
+
+      expect(currentBounty.balance).to.be.equal(ethers.utils.parseEther('500'));
+
+      const bounties = await campaignMarket.getAllBounties();
+
+      const bountyData = bounties.reduce((acc, bytes) => {
+        try {
+
+          /*
+          current.bountyId,
+                current.name,
+                current.description,
+                current.reward,
+                current.rewardType,
+                bountyBalance[i].balance,
+                current.rewardAddress,
+                current.payoutFrom
+           */
+          const [bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
+              ethers.utils.defaultAbiCoder.decode(
+                  ["uint256", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
+                  bytes,
+                  false
+              );
+          acc.push({
+            bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom
+          });
+          return acc;
+        } catch (e) {
+          console.log(e);
+          return acc;
+        }
+      }, []);
+
+      console.log(bountyData);
+
     })
   });
 });
