@@ -92,7 +92,7 @@ contract CampaignMarket is
         uint256 reward,
         uint256 totalRewards,
         address tokenAddress
-    ) external payable {
+    ) external payable nonReentrant {
         bytes32 bountyType = keccak256(abi.encodePacked(rewardType));
         require(bountyType == ERC20_REWARD || bountyType == ERC721_REWARD || bountyType == ERC1155_REWARD , "Invalid Reward type");
 
@@ -104,7 +104,7 @@ contract CampaignMarket is
                 require(msg.value >= totalRewards, "Must pass at least one bounty worth of collateral");
                 (bool sent, bytes memory data) = payable(address(this)).call{value: msg.value}("");
                 // Store escrow balances by bounty id
-                require(sent, "Failed to send Ether");
+                require(sent, "Failed to send native");
             } else {
                 IERC20(tokenAddress).transferFrom(
                     _msgSender(),
@@ -135,6 +135,69 @@ contract CampaignMarket is
             // TODO logic for erc1155
         }
 
+    }
+
+    /**
+     * @notice Allow anyone to add more bounty balance to keep it running
+     * @param bountyId The bounty id
+     * @param totalRewards The total rewards that are claimable,
+     * @param tokenAddress token address for bounty collateral, zero address if native token
+     */
+    function addBountyBalance(
+        uint256 bountyId,
+        uint256 totalRewards,
+        address tokenAddress
+    ) external payable {
+        Bounty storage bounty = bounties[bountyId];
+        if(bounty.rewardType == ERC20_REWARD){
+            // Process transferring token to escrow
+            if(tokenAddress == address(0)){
+                require(msg.value >= totalRewards, "Must pass at least one bounty worth of collateral");
+                (bool sent, bytes memory data) = payable(address(this)).call{value: msg.value}("");
+                require(sent, "Failed to send native");
+            } else {
+                IERC20(tokenAddress).transferFrom(
+                    _msgSender(),
+                    address(this),
+                    totalRewards
+                );
+            }
+            // Add to bounty balance
+            bountyBalance[bountyId].balance += totalRewards;
+        }
+    }
+
+    /**
+     * @notice Revokes a bounty, returns remaining balance back to owner
+     * @param bountyId The bounty id reference
+     */
+    function revokeBounty(
+        uint256 bountyId
+    ) external payable nonReentrant {
+        Bounty storage bounty = bounties[bountyId];
+        BountyBalance storage current = bountyBalance[bountyId];
+        // Return any left over token balance
+        if(current.balance > 0){
+            if(bounty.rewardType == ERC20_REWARD){
+                uint256 refundable = current.balance;
+
+                // Zero any balance remaining
+                bountyBalance[bountyId].balance = 0;
+
+                address ownerOf = payable(current.ownerOf);
+
+                if(bounty.rewardAddress == address(0)){
+                    (bool refunded, bytes memory data) = ownerOf.call{value: refundable}("");
+                    require(refunded, "Failed to send native");
+                } else {
+                    IERC20(bounty.rewardAddress).transferFrom(
+                        address(this),
+                        ownerOf,
+                        refundable
+                    );
+                }
+            }
+        }
     }
 
     /// @notice Returns bounty owner

@@ -73,8 +73,37 @@ const deployMTP = async () => {
   );
 }
 
+const processBounties = (bounties) => bounties.reduce((acc, bytes) => {
+  try {
+
+    /*
+    current.bountyId,
+          current.name,
+          current.description,
+          current.reward,
+          current.rewardType,
+          bountyBalance[i].balance,
+          current.rewardAddress,
+          current.payoutFrom
+     */
+    const [bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
+        ethers.utils.defaultAbiCoder.decode(
+            ["uint256", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
+            bytes,
+            false
+        );
+    acc.push({
+      bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom
+    });
+    return acc;
+  } catch (e) {
+    console.log(e);
+    return acc;
+  }
+}, []);
+
 describe("CampaignMarket", function () {
-  const trustedForwarder = "0x84a0856b038eaAd1cC7E297cF34A7e72685A8693";
+  const trustedForwarder = "0xf0511f123164602042ab2bCF02111fA5D3Fe97CD";
 
   async function setup() {
     const [owner, alice, bob] = await ethers.getSigners();
@@ -165,37 +194,61 @@ describe("CampaignMarket", function () {
 
       const bounties = await campaignMarket.getAllBounties();
 
-      const bountyData = bounties.reduce((acc, bytes) => {
-        try {
+      const bountyData = processBounties(bounties)
 
-          /*
-          current.bountyId,
-                current.name,
-                current.description,
-                current.reward,
-                current.rewardType,
-                bountyBalance[i].balance,
-                current.rewardAddress,
-                current.payoutFrom
-           */
-          const [bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
-              ethers.utils.defaultAbiCoder.decode(
-                  ["uint256", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
-                  bytes,
-                  false
-              );
-          acc.push({
-            bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom
-          });
-          return acc;
-        } catch (e) {
-          console.log(e);
-          return acc;
-        }
-      }, []);
-
-      console.log(bountyData);
+      expect(bountyData.length).to.be.equal(1);
 
     })
+
+    it("Should be able to revoke a bounty", async () => {
+
+      const revokeBountyTx = await campaignMarket.revokeBounty(0);
+
+      await revokeBountyTx.wait();
+
+      const balance = await ethers.provider.getBalance(campaignMarket.address);
+
+      expect(balance).to.be.equal(ethers.utils.parseEther('0'));
+
+      const currentBounty = await campaignMarket.bountyBalance(0);
+
+      expect(currentBounty.balance).to.be.equal(ethers.utils.parseEther('0'));
+
+    })
+
+    it("Should be able to add a b w/ arbitrary erc20 token", async () => {
+
+      const approveTx = await bnty.approve(campaignMarket.address, ethers.utils.parseEther('50000'));
+      await approveTx.wait();
+
+      const createBountyTx = await campaignMarket.createBounty(
+          "Bounty 2",
+          "Bounty 2 Description Arbitrary ERC20",
+          "ERC20_REWARD",
+          ethers.utils.parseEther('1000'),
+          ethers.utils.parseEther('50000'),
+          bnty.address,
+      );
+
+      await createBountyTx.wait();
+
+      const balance = await bnty.balanceOf(campaignMarket.address);
+
+      expect(balance).to.be.equal(ethers.utils.parseEther('50000'));
+
+      const currentBounty = await campaignMarket.bountyBalance(1);
+
+      expect(currentBounty.balance).to.be.equal(ethers.utils.parseEther('50000'));
+
+      const bounties = await campaignMarket.getAllBounties();
+
+      const bountyData = processBounties(bounties)
+    
+      expect(bountyData.length).to.be.equal(2);
+      
+      console.log(bountyData[1]);
+
+    })
+
   });
 });
