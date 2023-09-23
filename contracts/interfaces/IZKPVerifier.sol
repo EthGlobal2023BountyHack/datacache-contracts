@@ -5,8 +5,14 @@ pragma solidity ^0.8.0;
 import "./ICircuitValidator.sol";
 
 interface IZKPVerifier {
+
+    struct SubmitResponse {
+        uint64 requestId;
+        uint256 bountyId;
+    }
+
     function submitZKPResponse(
-        uint64 requestId,
+        SubmitResponse memory request,
         uint256[] memory inputs,
         uint256[2] memory a,
         uint256[2][2] memory b,

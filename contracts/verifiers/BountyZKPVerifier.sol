@@ -8,7 +8,7 @@ import "../lib/Poseidon.sol";
 import "../interfaces/ICircuitValidator.sol";
 import "../interfaces/IZKPVerifier.sol";
 
-contract ZKPVerifier is IZKPVerifier, Ownable {
+contract BountyZKPVerifier is IZKPVerifier, Ownable {
     // msg.sender-> ( requestID -> is proof given )
     mapping(address => mapping(uint64 => bool)) public proofs;
 
@@ -18,12 +18,14 @@ contract ZKPVerifier is IZKPVerifier, Ownable {
     uint64[] internal _supportedRequests;
 
     function submitZKPResponse(
-        uint64 requestId,
+        SubmitResponse calldata request,
         uint256[] calldata inputs,
         uint256[2] calldata a,
         uint256[2][2] calldata b,
         uint256[2] calldata c
     ) public override returns (bool) {
+        uint64 requestId = request.requestId;
+        uint256 bountyId = request.bountyId;
         require(
             requestValidators[requestId] != ICircuitValidator(address(0)),
             "validator is not set for this request id"
@@ -45,7 +47,8 @@ contract ZKPVerifier is IZKPVerifier, Ownable {
 
         proofs[msg.sender][requestId] = true; // user provided a valid proof for request
 
-        _afterProofSubmit(requestId, inputs, requestValidators[requestId]);
+        _afterProofSubmit(requestId, bountyId, inputs, requestValidators[requestId]);
+
         return true;
     }
 
@@ -121,6 +124,7 @@ contract ZKPVerifier is IZKPVerifier, Ownable {
      */
     function _afterProofSubmit(
         uint64 requestId,
+        uint256 bountyId,
         uint256[] memory inputs,
         ICircuitValidator validator
     ) internal virtual {}

@@ -75,8 +75,7 @@ const config: HardhatUserConfig = {
       mainnet: process.env.ETHERSCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
       polygon: process.env.POLYGON_API_KEY || "",
-      polygonMumbai: process.env.POLYGON_API_KEY || "",
-      zk: process.env.POLYGON_API_KEY || "",
+      polygonMumbai: process.env.POLYGON_API_KEY || ""
     },
   },
   mocha: {

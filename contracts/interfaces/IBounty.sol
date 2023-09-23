@@ -18,20 +18,8 @@ interface IBounty {
         uint256 balance;
     }
 
-    struct Commission {
-        uint256 bountyId;
-        uint256 value;
-        uint256 lastClaimedAt;
-        bool isVerified;
-    }
-
     event CreateBounty(uint256 bountyId, string name);
 
-    event JoinedBounty(uint256 bountyId, address joiner);
+    event ClaimedBounty(address addr, uint256 bountyId, uint256 value, bytes32 rwardType, address tokenAddress);
 
-    event CommissionAdded(uint256 bountyId, uint256 value);
-
-    event CommissionClaimed(uint256 bountyId, uint256 value);
-
-    event CommissionVerified(uint256 bountyId, uint256 value);
 }

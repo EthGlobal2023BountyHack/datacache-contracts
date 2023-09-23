@@ -11,7 +11,7 @@ import {NativeMetaTransaction} from "./common/NativeMetaTransaction.sol";
 import {IBounty} from "./interfaces/IBounty.sol";
 import "./lib/GenesisUtils.sol";
 import "./interfaces/ICircuitValidator.sol";
-import "./verifiers/ZKPVerifier.sol";
+import "./verifiers/BountyZKPVerifier.sol";
 import "hardhat/console.sol";
 
 /**
@@ -25,7 +25,7 @@ contract CampaignMarket is
     NativeMetaTransaction,
     AccessControl,
     ReentrancyGuard,
-    ZKPVerifier,
+    BountyZKPVerifier,
     IBounty
 {
 
@@ -51,14 +51,14 @@ contract CampaignMarket is
     /// @dev The emergency withdraw address
     address public treasury;
 
-    /// @dev Address id to commission info
-    mapping(address => Commission[]) public commissions;
-
     /// @dev Bounty id to Bounty
     mapping(uint256 => Bounty) public bounties;
 
     /// @dev Bounty id to bounty ownership
     mapping(uint256 => BountyBalance) public bountyBalance;
+
+    /// @dev address to pending bounty id state
+    mapping(address => mapping(uint256 => bool)) public pendingBountyProofs;
 
     constructor(
         address _trustedForwarder
@@ -243,77 +243,37 @@ contract CampaignMarket is
     // ========================================
 
     /**
-     * @dev Adds a commission value for a particular token id
-     * @param _address The address of commission owner
-     * @param _bountyId The bounty id of the commission
-     */
-    function addCommission(
-        uint256 _address,
-        uint256 _bountyId
-    ) internal {
-
-    }
-
-    /**
-     * @dev Removes a commission value for a particular address and bounty
-     * @param _address The address of commission owner
-     * @param _bountyId The bounty id of the commission
-     */
-    function removeCommission(
-        uint256 _address,
-        uint256 _bountyId
-    ) internal {
-
-    }
-
-    /**
-     * @notice Verify commission for a particular bounty
-     * @dev Set by a trusted bounty manager
+     * @dev Processes a reward for a particular bounty id
+     * @param _to The address who receives the payout
      * @param _bountyId The bounty id
-     * @param _receiver The address for the commission
-     * @param _amount The amount of value to apply
      */
-    function verifyCommission(
-        uint256 _bountyId,
-        address _receiver,
-        uint256 _amount
-    ) external onlyRole(BOUNTY_MANAGER) {
-        // Update commissions for particular receiver and bounty
-        emit CommissionVerified(_bountyId, _amount);
-    }
+    function fulfillBounty(
+        address _to,
+        uint256 _bountyId
+    ) internal {
+        Bounty storage bounty = bounties[_bountyId];
 
-    /**
-     * @notice Returns all commission details for a batch of addresses in bytes32 for read
-     * @param _owners The array of addresses
-     */
-    function getCommissions(
-        address[] calldata _owners
-    ) external view returns (bytes[] memory) {
-        bytes[] memory allCommissions = new bytes[](_owners.length);
-
-        Commission[] memory ownerCommissions;
-        Commission memory current;
-
-        for (uint256 i; i < _owners.length;) {
-            ownerCommissions = commissions[_owners[i]];
-
-            for (uint256 j; j < ownerCommissions.length;) {
-                if(ownerCommissions.length > 0){
-                    current = ownerCommissions[j];
-                    allCommissions[i] = abi.encode("test");
-                } else {
-                    allCommissions[i] = "";
-                }
-                unchecked {
-                    ++j;
-                }
+        if(bounty.rewardType == ERC20_REWARD){
+            // Process transferring token to escrow
+            if(bounty.rewardAddress == address(0)){
+                (bool sent, bytes memory data) = payable(_to).call{value: bounty.reward}("");
+                require(sent, "Failed to send native");
+            } else {
+                IERC20(bounty.rewardAddress).transferFrom(
+                    address(this),
+                    payable(_to),
+                    bounty.reward
+                );
             }
-            unchecked {
-                ++i;
-            }
+            // Subtract from available bounty balance
+            bountyBalance[_bountyId].balance -= bounty.reward;
+        } else if(bounty.rewardType == ERC721_REWARD){
+            // TODO logic for erc721
+        } else if(bounty.rewardType == ERC1155_REWARD){
+            // TODO logic for erc1155
         }
 
-        return allCommissions;
+        emit ClaimedBounty(_to, _bountyId, bounty.reward, bounty.rewardType, bounty.rewardAddress);
     }
 
     /**
@@ -375,31 +335,21 @@ contract CampaignMarket is
 
     function _afterProofSubmit(
         uint64 requestId,
+        uint256 bountyId,
         uint256[] memory inputs,
         ICircuitValidator validator
     ) internal override {
-        require(
-            requestId == VERIFY_REQUEST_ID && addressToId[_msgSender()] == 0,
-            "proof can not be submitted more than once"
-        );
-
         uint256 id = inputs[validator.getChallengeInputIndex()];
-
-        if (idToAddress[id] == address(0)) {
-
-            addressToId[_msgSender()] = id;
-            idToAddress[id] = _msgSender();
-
-            // e.g., payout erc20 or airdrop mint
-//            if(bountyType == ERC20_REWARD){
-//                // TODO logic for erc20
-//            } else if(bountyType == ERC721_REWARD){
-//                // TODO logic for erc721
-//            } else if(bountyType == ERC1155_REWARD){
-//                // TODO logic for erc1155
-//            }
-
-            // TODO Update commission payout to verified
+        address receiver = idToAddress[id];
+        if (receiver == address(0)) {
+            address to = _msgSender();
+            addressToId[to] = id;
+            idToAddress[id] = to;
+            require(
+                proofs[to][VERIFY_REQUEST_ID] == true,
+                "only identities who provided proof are allowed to receive commissions"
+            );
+            fulfillBounty(to, bountyId);
         }
     }
 

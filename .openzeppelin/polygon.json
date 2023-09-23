@@ -1,0 +1,242 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x2181A9713Ef674B10C001D3cF360d77760A30952",
+    "txHash": "0x664ea33e4b1d264447b50182b64a7691114dd9397f1f4d3ab0c97f550c61765a"
+  },
+  "proxies": [
+    {
+      "address": "0xC3DCf42828ACE92ceA54B79dBA0Abd3b8bE4ff2d",
+      "txHash": "0x70a6436fc379757803781bba924bab88737582f7299ecb2436583ef78110b071",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x790475E07AeC14C12Ed29f697767FF927b75Bc11",
+      "txHash": "0x7c2853b002325044089910d1cb364f432c86eefd76f1d0d436e0163d7ea974d8",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x367e3C6F12318F859dF30aaC2026FDAf3B9F8Ce9",
+      "txHash": "0x4f6b1beafdf640de7e4230c017ad349679f722124358eff6567e9b65914dbbac",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "ecdf583568f3aec0fb97fb2e42765b216843a8a69958b50e95fa667da1f6f236": {
+      "address": "0xeecED9eAfa0BA10542DCa67D2CB6Aa014562c24C",
+      "txHash": "0x3411d9b828d757b2d031b8653409e24bf6f48bd82e68131d9a3e7aa4e758d8c1",
+      "layout": {
+        "solcVersion": "0.8.17",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "verifier",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_contract(IVerifier)3932",
+            "contract": "CredentialAtomicQueryMTPValidator",
+            "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:14"
+          },
+          {
+            "label": "state",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_contract(IState)3907",
+            "contract": "CredentialAtomicQueryMTPValidator",
+            "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:15"
+          },
+          {
+            "label": "revocationStateExpirationTime",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "CredentialAtomicQueryMTPValidator",
+            "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:17"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IState)3907": {
+            "label": "contract IState",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IVerifier)3932": {
+            "label": "contract IVerifier",
+            "numberOfBytes": "20"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "a1bb19a3bdea244ed42e7d1ac5310a8a89c04028766d86aef3dcbdc84d2773d0": {
+      "address": "0x9daF11eD636Bc02be5d7e9414Eb8C4f3724CC5DD",
+      "txHash": "0xe15b81d5a83d810ba720c6c1d4c289323f875ad64501162f231b7d750d88a693",
+      "layout": {
+        "solcVersion": "0.8.17",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "verifier",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_contract(IVerifier)3932",
+            "contract": "CredentialAtomicQuerySigValidator",
+            "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:14"
+          },
+          {
+            "label": "state",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_contract(IState)3907",
+            "contract": "CredentialAtomicQuerySigValidator",
+            "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:15"
+          },
+          {
+            "label": "revocationStateExpirationTime",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "CredentialAtomicQuerySigValidator",
+            "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:17"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IState)3907": {
+            "label": "contract IState",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IVerifier)3932": {
+            "label": "contract IVerifier",
+            "numberOfBytes": "20"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}

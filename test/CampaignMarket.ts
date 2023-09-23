@@ -45,7 +45,9 @@ const deployMTP = async () => {
   const VerifierMTPWrapper = await ethers.getContractFactory(
       verifierContractWrapperName
   );
-  const verifierWrapper = await VerifierMTPWrapper.deploy();
+  const verifierWrapper = await VerifierMTPWrapper.deploy({
+    gasPrice: ethers.utils.parseUnits('200', 'gwei')
+  });
 
   await verifierWrapper.deployed();
 
@@ -61,7 +63,7 @@ const deployMTP = async () => {
 
   const CredentialAtomicQueryValidatorProxy = await upgrades.deployProxy(
       CredentialAtomicQueryValidator,
-      [verifierWrapper.address, stateAddress] // current state address on mumbai
+      [verifierWrapper.address, stateAddress]
   );
 
   await CredentialAtomicQueryValidatorProxy.deployed();
@@ -75,17 +77,6 @@ const deployMTP = async () => {
 
 const processBounties = (bounties) => bounties.reduce((acc, bytes) => {
   try {
-
-    /*
-    current.bountyId,
-          current.name,
-          current.description,
-          current.reward,
-          current.rewardType,
-          bountyBalance[i].balance,
-          current.rewardAddress,
-          current.payoutFrom
-     */
     const [bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
         ethers.utils.defaultAbiCoder.decode(
             ["uint256", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
@@ -114,7 +105,10 @@ describe("CampaignMarket", function () {
     const bnty = await BountyCoin.deploy(
       "BountyCoin",
       "BNTY",
-      ethers.BigNumber.from("100000000000000000000000000")
+      ethers.BigNumber.from("100000000000000000000000000"),
+        {
+          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+        }
     );
 
     await bnty.deployed();
@@ -122,7 +116,10 @@ describe("CampaignMarket", function () {
     console.log("$BNTY Deployed to:", bnty.address);
 
     const PoseidonUnit6L = await ethers.getContractFactory("PoseidonUnit6L");
-    const poseidon6Lib = await PoseidonUnit6L.deploy();
+    const poseidon6Lib = await PoseidonUnit6L.deploy(
+        {
+          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+        });
     await poseidon6Lib.deployed();
 
     console.log(`PoseidonUnit6L Address---> ${poseidon6Lib.address}`)
@@ -132,7 +129,10 @@ describe("CampaignMarket", function () {
         PoseidonUnit6L: poseidon6Lib.address
       }});
 
-    const spongePoseidonLib = await SpongePoseidonLib.deploy();
+    const spongePoseidonLib = await SpongePoseidonLib.deploy(
+        {
+          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+        });
     await spongePoseidonLib.deployed();
 
     console.log(`SpongePoseidon Address---> ${spongePoseidonLib.address}`)
@@ -144,10 +144,15 @@ describe("CampaignMarket", function () {
     }});
 
     const campaignMarket = await CampaignMarket.deploy(
-      trustedForwarder
+      trustedForwarder,
+        {
+          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+        }
     );
 
     await campaignMarket.deployed();
+
+    console.log(`Campaign Market Address---> ${campaignMarket.address}`)
 
     // Deploy validators
     await deployMTP();
@@ -243,9 +248,9 @@ describe("CampaignMarket", function () {
       const bounties = await campaignMarket.getAllBounties();
 
       const bountyData = processBounties(bounties)
-    
+
       expect(bountyData.length).to.be.equal(2);
-      
+
       console.log(bountyData[1]);
 
     })
