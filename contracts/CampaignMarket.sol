@@ -72,11 +72,11 @@ contract CampaignMarket is
      * @param tokenAddress token address for bounty collateral, zero address if native token
      */
     function createBounty(
-    string calldata name,
-    string calldata description,
-    string calldata rewardType,
-    uint256 reward,
-    address tokenAddress
+        string calldata name,
+        string calldata description,
+        string calldata rewardType,
+        uint256 reward,
+        address tokenAddress
     ) external payable {
         bytes32 bountyType = keccak256(abi.encodePacked(rewardType));
         require(bountyType == ERC20_REWARD || bountyType == ERC721_REWARD || bountyType == ERC1155_REWARD , "Invalid Reward type");
@@ -164,7 +164,7 @@ contract CampaignMarket is
      */
     function verifyCommission(
         uint256 _bountyId,
-    address _receiver,
+        address _receiver,
         uint256 _amount
     ) external onlyRole(BOUNTY_MANAGER) {
         // Update commissions for particular receiver and bounty
@@ -203,10 +203,20 @@ contract CampaignMarket is
         uint256 id = inputs[validator.getChallengeInputIndex()];
 
         if (idToAddress[id] == address(0)) {
-            // TODO Update commission payout and perform operation
-            // e.g., payout erc20 or airdrop mint
+
             addressToId[_msgSender()] = id;
             idToAddress[id] = _msgSender();
+
+            // e.g., payout erc20 or airdrop mint
+            if(bountyType == ERC20_REWARD){
+                // TODO logic for erc20
+            } else if(bountyType == ERC721_REWARD){
+                // TODO logic for erc721
+            } else if(bountyType == ERC1155_REWARD){
+                // TODO logic for erc1155
+            }
+
+            // TODO Update commission payout to verified
         }
     }
 
