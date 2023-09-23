@@ -208,13 +208,13 @@ contract CampaignMarket is
             idToAddress[id] = _msgSender();
 
             // e.g., payout erc20 or airdrop mint
-            if(bountyType == ERC20_REWARD){
-                // TODO logic for erc20
-            } else if(bountyType == ERC721_REWARD){
-                // TODO logic for erc721
-            } else if(bountyType == ERC1155_REWARD){
-                // TODO logic for erc1155
-            }
+//            if(bountyType == ERC20_REWARD){
+//                // TODO logic for erc20
+//            } else if(bountyType == ERC721_REWARD){
+//                // TODO logic for erc721
+//            } else if(bountyType == ERC1155_REWARD){
+//                // TODO logic for erc1155
+//            }
 
             // TODO Update commission payout to verified
         }
