@@ -12,7 +12,6 @@ import {IBounty} from "./interfaces/IBounty.sol";
 import "./lib/GenesisUtils.sol";
 import "./interfaces/ICircuitValidator.sol";
 import "./verifiers/BountyZKPVerifier.sol";
-import "hardhat/console.sol";
 
 /**
  * @title CampaignMarket
@@ -84,6 +83,7 @@ contract CampaignMarket is
      * @param reward The reward value
      * @param tokenAddress token address for bounty collateral, zero address if native token
      * @param totalRewards The total rewards that are claimable
+     * @param request The zk proof request params
      */
     function createBounty(
         string calldata name,
@@ -91,7 +91,8 @@ contract CampaignMarket is
         string calldata rewardType,
         uint256 reward,
         uint256 totalRewards,
-        address tokenAddress
+        address tokenAddress,
+        ZKPBountyRequest calldata request
     ) external payable nonReentrant {
         bytes32 bountyType = keccak256(abi.encodePacked(rewardType));
         require(bountyType == ERC20_REWARD || bountyType == ERC721_REWARD || bountyType == ERC1155_REWARD , "Invalid Reward type");
@@ -134,6 +135,9 @@ contract CampaignMarket is
         } else if(bountyType == ERC1155_REWARD){
             // TODO logic for erc1155
         }
+
+        // Setup validator for these requests
+        setZKPRequest(request.requestId, request.validator, request.schema, request.claimPathKey, request.operator, request.value);
 
     }
 

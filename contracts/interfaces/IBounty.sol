@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import "./ICircuitValidator.sol";
+
 interface IBounty {
 
     struct Bounty {
@@ -16,6 +18,15 @@ interface IBounty {
     struct BountyBalance {
         address ownerOf;
         uint256 balance;
+    }
+
+    struct ZKPBountyRequest {
+        uint64 requestId;
+        ICircuitValidator validator;
+        uint256 schema;
+        uint256 claimPathKey;
+        uint256 operator;
+        uint256[] value;
     }
 
     event CreateBounty(uint256 bountyId, string name);
