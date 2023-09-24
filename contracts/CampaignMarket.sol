@@ -77,8 +77,7 @@ contract CampaignMarket is
 
     /**
      * @notice Creates a new data bounty
-     * @param name The display name
-     * @param description The description of data bounty
+     * @param info Basic details of a bounty, name, desc, and image url
      * @param rewardType The reward type as a string, "ERC20_REWARD", "ERC721REWARD", "ERC1155_REWARD"
      * @param reward The reward value
      * @param tokenAddress token address for bounty collateral, zero address if native token
@@ -86,8 +85,7 @@ contract CampaignMarket is
      * @param request The zk proof request params
      */
     function createBounty(
-        string calldata name,
-        string calldata description,
+        BountyInfo calldata info,
         string calldata rewardType,
         uint256 reward,
         uint256 totalRewards,
@@ -123,8 +121,9 @@ contract CampaignMarket is
 
             bounties[nextBountyId] = Bounty({
                 bountyId: nextBountyId,
-                name: name,
-                description: description,
+                name: info.name,
+                description: info.description,
+                imageUrl: info.imageUrl,
                 rewardType: bountyType,
                 reward: reward,
                 rewardAddress: tokenAddress,
@@ -233,6 +232,7 @@ contract CampaignMarket is
                 current.bountyId,
                 current.name,
                 current.description,
+                current.imageUrl,
                 current.reward,
                 current.rewardType,
                 bountyBalance[i].balance,

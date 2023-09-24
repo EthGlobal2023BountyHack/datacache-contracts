@@ -166,14 +166,14 @@ const deployMTP = async () => {
 
 const processBounties = (bounties) => bounties.reduce((acc, bytes) => {
   try {
-    const [bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
+    const [bountyId, name, description, imageUrl, reward, rewardType, rewardTotal, rewardAddress, payoutFrom] =
         ethers.utils.defaultAbiCoder.decode(
-            ["uint256", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
+            ["uint256", "string", "string", "string", "uint256", "bytes32", "uint256", "address", "address"],
             bytes,
             false
         );
     acc.push({
-      bountyId, name, description, reward, rewardType, rewardTotal, rewardAddress, payoutFrom
+      bountyId, name, description, imageUrl, reward, rewardType, rewardTotal, rewardAddress, payoutFrom
     });
     return acc;
   } catch (e) {
@@ -304,8 +304,9 @@ describe("CampaignMarket", function () {
     it("Should be able to add a bounty", async () => {
 
       const createBountyTx = await campaignMarket.createBounty(
-          "Bounty 1",
-          "Bounty 1 Description",
+          ["Bounty 1",
+            "Bounty 1 Description",
+            'https://avatars.githubusercontent.com/u/35270686?s=200&v=4'],
           "ERC20_REWARD",
           ethers.utils.parseEther('1'),
           ethers.utils.parseEther('500'),
@@ -343,8 +344,9 @@ describe("CampaignMarket", function () {
       await approveTx.wait();
 
       const createBountyTx = await campaignMarket.createBounty(
-          "Bounty 2",
-          "Bounty 2 Description Arbitrary ERC20",
+          ["Bounty 2",
+            "Bounty 2 Description Arbitrary ERC20",
+            'https://avatars.githubusercontent.com/u/35270686?s=200&v=4'],
           "ERC20_REWARD",
           ethers.utils.parseEther('1000'),
           ethers.utils.parseEther('50000'),

@@ -5,10 +5,17 @@ import "./ICircuitValidator.sol";
 
 interface IBounty {
 
+    struct BountyInfo {
+        string name;
+        string description;
+        string imageUrl;
+    }
+
     struct Bounty {
         uint256 bountyId;
         string name;
         string description;
+        string imageUrl;
         bytes32 rewardType;
         uint256 reward;
         address rewardAddress;
