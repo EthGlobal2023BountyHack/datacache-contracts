@@ -182,7 +182,7 @@ contract CampaignMarket is
      */
     function revokeBounty(
         uint256 bountyId
-    ) external payable nonReentrant {
+    ) external nonReentrant {
         Bounty storage bounty = bounties[bountyId];
         BountyBalance storage current = bountyBalance[bountyId];
         // Return any left over token balance
@@ -252,6 +252,32 @@ contract CampaignMarket is
     // Reward CRUD
     // ========================================
 
+    /// @dev Bypass proof and test fulfillment
+    function testFulfillBounty(
+        address _to,
+        uint256 _bountyId
+    ) external onlyRole(OWNER_ROLE) {
+        Bounty storage bounty = bounties[_bountyId];
+
+        if(bounty.rewardType == ERC20_REWARD){
+            // Process transferring token to escrow
+            if(bounty.rewardAddress == address(0)){
+                (bool sent, bytes memory data) = payable(_to).call{value: bounty.reward}("");
+                require(sent, "Failed to send native");
+            } else {
+                _safeTransferRewards(bounty.rewardAddress, payable(_to), bounty.reward);
+            }
+            // Subtract from available bounty balance
+            bountyBalance[_bountyId].balance -= bounty.reward;
+        } else if(bounty.rewardType == ERC721_REWARD){
+            // TODO logic for erc721
+        } else if(bounty.rewardType == ERC1155_REWARD){
+            // TODO logic for erc1155
+        }
+
+        emit ClaimedBounty(_to, _bountyId, bounty.reward, bounty.rewardType, bounty.rewardAddress);
+    }
+
     /**
      * @dev Processes a reward for a particular bounty id
      * @param _to The address who receives the payout
@@ -269,11 +295,7 @@ contract CampaignMarket is
                 (bool sent, bytes memory data) = payable(_to).call{value: bounty.reward}("");
                 require(sent, "Failed to send native");
             } else {
-                IERC20(bounty.rewardAddress).transferFrom(
-                    address(this),
-                    payable(_to),
-                    bounty.reward
-                );
+                _safeTransferRewards(bounty.rewardAddress, payable(_to), bounty.reward);
             }
             // Subtract from available bounty balance
             bountyBalance[_bountyId].balance -= bounty.reward;

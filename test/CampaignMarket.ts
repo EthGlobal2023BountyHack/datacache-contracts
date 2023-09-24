@@ -228,8 +228,6 @@ describe("CampaignMarket", function () {
     const BountyCoin = await ethers.getContractFactory("BountyCoin");
 
     const bnty = await BountyCoin.deploy(
-      "BountyCoin",
-      "BNTY",
       ethers.BigNumber.from("100000000000000000000000000"),
         {
           gasPrice: ethers.utils.parseUnits('200', 'gwei')
@@ -376,6 +374,50 @@ describe("CampaignMarket", function () {
       console.log(bountyData[1]);
 
     })
+
+    it("Should be able to claim a bounty - bypass proof", async () => {
+
+      let ogBalance = await ethers.provider.getBalance(alice.address);
+
+      let fulfillBountyTx = await campaignMarket.testFulfillBounty(
+          alice.address,
+          0,
+          {
+            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          }
+      );
+
+      await fulfillBountyTx.wait();
+
+      let balance = await ethers.provider.getBalance(alice.address);
+
+      expect(balance).to.be.equal(ethers.utils.parseEther('1').add(ogBalance));
+
+      ogBalance = await bnty.balanceOf(alice.address);
+
+      fulfillBountyTx = await campaignMarket.testFulfillBounty(
+          alice.address,
+          1,
+          {
+            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          }
+      );
+
+      await fulfillBountyTx.wait();
+
+      balance = await bnty.balanceOf(alice.address);
+
+      expect(balance).to.be.equal(ethers.utils.parseEther('1000').add(ogBalance));
+
+      let currentBounty = await campaignMarket.bountyBalance(0);
+
+      expect(currentBounty.balance).to.be.equal(ethers.utils.parseEther('499'));
+
+      currentBounty = await campaignMarket.bountyBalance(1);
+
+      expect(currentBounty.balance).to.be.equal(ethers.utils.parseEther('49000'));
+
+    });
 
     it("Should be able to claim a bounty", async () => {
 
