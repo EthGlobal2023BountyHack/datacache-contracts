@@ -29,8 +29,17 @@ interface IBounty {
         uint256[] value;
     }
 
-    event CreateBounty(uint256 bountyId, string name);
+    event CreatedBounty(address ownerOf, uint256 bountyId, uint256 reward, bytes32 rewardType, address rewardAddress);
 
-    event ClaimedBounty(address addr, uint256 bountyId, uint256 value, bytes32 rwardType, address tokenAddress);
+    event NewBountyRequestSet(
+        uint64 requestId,
+        ICircuitValidator validator,
+        uint256 schema,
+        uint256 claimPathKey,
+        uint256 operator,
+        uint256[] value
+    );
+
+    event ClaimedBounty(address addr, uint256 bountyId, uint256 value, bytes32 rewardType, address tokenAddress);
 
 }

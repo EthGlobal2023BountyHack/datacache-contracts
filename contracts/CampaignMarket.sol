@@ -98,6 +98,7 @@ contract CampaignMarket is
         require(bountyType == ERC20_REWARD || bountyType == ERC721_REWARD || bountyType == ERC1155_REWARD , "Invalid Reward type");
 
         uint256 nextBountyId = bountyIds++;
+        address ownerOf = _msgSender();
 
         if(bountyType == ERC20_REWARD){
             // Process transferring token to escrow
@@ -108,7 +109,7 @@ contract CampaignMarket is
                 require(sent, "Failed to send native");
             } else {
                 IERC20(tokenAddress).transferFrom(
-                    _msgSender(),
+                    ownerOf,
                     address(this),
                     totalRewards
                 );
@@ -116,7 +117,7 @@ contract CampaignMarket is
 
             // Add to bounty balance
             bountyBalance[nextBountyId] = BountyBalance({
-                ownerOf: _msgSender(),
+                ownerOf: ownerOf,
                 balance: totalRewards
             });
 
@@ -130,14 +131,19 @@ contract CampaignMarket is
                 payoutFrom: address(this)
             });
 
+            emit CreatedBounty(ownerOf, nextBountyId, reward, bountyType, tokenAddress);
+
+            // Setup validator for these requests
+            setZKPRequest(request.requestId, request.validator, request.schema, request.claimPathKey, request.operator, request.value);
+
+            emit NewBountyRequestSet(request.requestId, request.validator, request.schema, request.claimPathKey, request.operator, request.value);
+
         } else if(bountyType == ERC721_REWARD){
             // TODO logic for erc721
         } else if(bountyType == ERC1155_REWARD){
             // TODO logic for erc1155
         }
 
-        // Setup validator for these requests
-        setZKPRequest(request.requestId, request.validator, request.schema, request.claimPathKey, request.operator, request.value);
 
     }
 

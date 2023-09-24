@@ -300,6 +300,7 @@ describe("CampaignMarket", function () {
         await loadFixture(setup));
     });
 
+
     it("Should be able to add a bounty", async () => {
 
       const createBountyTx = await campaignMarket.createBounty(
@@ -311,7 +312,8 @@ describe("CampaignMarket", function () {
           ethers.constants.AddressZero,
           createRequest(mtpValidator.address),
           {
-            value: ethers.utils.parseEther('500')
+            value: ethers.utils.parseEther('500'),
+            gasPrice: ethers.utils.parseUnits('200', 'gwei')
           }
       );
 
@@ -335,7 +337,9 @@ describe("CampaignMarket", function () {
 
     it("Should be able to add a b w/ arbitrary erc20 token", async () => {
 
-      const approveTx = await bnty.approve(campaignMarket.address, ethers.utils.parseEther('50000'));
+      const approveTx = await bnty.approve(campaignMarket.address, ethers.utils.parseEther('50000'), {
+        gasPrice: ethers.utils.parseUnits('200', 'gwei')
+      });
       await approveTx.wait();
 
       const createBountyTx = await campaignMarket.createBounty(
@@ -346,6 +350,9 @@ describe("CampaignMarket", function () {
           ethers.utils.parseEther('50000'),
           bnty.address,
           createRequest(mtpValidator.address),
+          {
+            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          }
       );
 
       await createBountyTx.wait();
@@ -369,42 +376,6 @@ describe("CampaignMarket", function () {
     })
 
     it("Should be able to claim a bounty", async () => {
-
-      const requestSample = {
-        id: "c811849d-6bfb-4d85-936e-3d9759c7f105",
-        typ: "application/iden3comm-plain-json",
-        type: "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
-        "body": {
-          "reason": "Claim a data credential bounty",
-          "transaction_data": {
-            "contract_address": "0x1C30DC7674e5Fd4f6154152E018b92ff29E66B41",
-            "method_id": "b68967e2",
-            "chain_id": 31337,
-            "network": "hardhat"
-          },
-          "scope": [
-            {
-              id: 1,
-              circuit_id: "credentialAtomicQueryMTPV2OnChain",
-              rules: {
-                query: {
-                  allowed_issuers: ["*"],
-                  req: {
-                    Age: {
-                      $gt: 18
-                    }
-                  },
-                  schema: {
-                    url:
-                        "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/33f9238b-dad0-440e-aa20-4561606c289b.json-ld",
-                    type: "AgeCredential"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      };
 
       // Generate a zk proof for the claim process as if from front end application with valid vc
       // Specifically uses polygon id sdk
@@ -583,7 +554,7 @@ describe("CampaignMarket", function () {
           }
       );
 
-      // await dataStorage.credential.saveCredential(credential);
+      await dataStorage.credential.saveCredential(credential);
       //
       // console.log(
       //     "================= saved credential ======================="
