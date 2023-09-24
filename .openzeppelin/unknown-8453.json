@@ -2,74 +2,29 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0x2181A9713Ef674B10C001D3cF360d77760A30952",
-    "txHash": "0x664ea33e4b1d264447b50182b64a7691114dd9397f1f4d3ab0c97f550c61765a"
+    "txHash": "0xb12ba374e3e9bd296ae15880432e2137c2be7330b18b84b2c744eea77e3c85d8"
   },
   "proxies": [
     {
-      "address": "0xC3DCf42828ACE92ceA54B79dBA0Abd3b8bE4ff2d",
-      "txHash": "0x70a6436fc379757803781bba924bab88737582f7299ecb2436583ef78110b071",
+      "address": "0xC543a3aF597358f0Efc2AEd141c690130A5E134f",
+      "txHash": "0x75198779ef30f8677946a29bb6952ebd6a8f0accfad130fe229815630a92c5c2",
       "kind": "transparent"
     },
     {
-      "address": "0x790475E07AeC14C12Ed29f697767FF927b75Bc11",
-      "txHash": "0x7c2853b002325044089910d1cb364f432c86eefd76f1d0d436e0163d7ea974d8",
+      "address": "0xE5179B37De3010506fCb94549e304306D3A4B335",
+      "txHash": "0xcaed87f5b7e6f5176acca631857a12a169435317943a87ff8b2f58e5984457b7",
       "kind": "transparent"
     },
     {
-      "address": "0x367e3C6F12318F859dF30aaC2026FDAf3B9F8Ce9",
-      "txHash": "0x4f6b1beafdf640de7e4230c017ad349679f722124358eff6567e9b65914dbbac",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xB92f3A12566Be5128C47df3639CAf82231313042",
-      "txHash": "0x92ee794826b3fea56e14e35e4b7edcab503b5db0e3338856a76a05a1b8e6a568",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x303c91187a68bD39f98cAB87d168e5E70dda7E38",
-      "txHash": "0x3179479a6cbf26eb5017f76975c23472b2849a1eca65c4f5e38dd96c4f9e0998",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xbDD8a934Cf6C6CadfE70A0137521c0e010e390Ae",
-      "txHash": "0x4a60db105f09a50c30dfdbf4435351c70e0fa2382a229b3a7ee901f5eab6c919",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x17A0FB3Be197f8f295e563c646B0519f2b1be1C5",
-      "txHash": "0x926def426e385cc480fb50f00c96e74424b21296dc65bf33afd0760cb5146129",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x06114e70CB356D1EB5E9ce970fD861E71C18Fa20",
-      "txHash": "0x4c18735d034c7bd8d87b2dca1d56dc58cd4fd569061e831958a1b294824226e5",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x5Ff5d3bf3b25f551B29EEc62b0F8911727B92180",
-      "txHash": "0x55b4a6d7f4e0e224598684aa13234cc7b11487aa91f33a155f453a2c17f25950",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xd6718E6105fFF7F4aD63e01014E4Ed22d94A0fD5",
-      "txHash": "0xf45045901a6dabe4382797c6184654156bf9fb2394d9dd0349b91b4ea7da6cf5",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xab559cF68b9cF588Ec96b3Fa5d02691155553a94",
-      "txHash": "0xfb6239c3b058e90093185ea446417a7d23efc1dbe81cb60f859a9eda035166ef",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xEC1f49f41A0313c5437Ee399fa44dAFFe56E7eE0",
-      "txHash": "0xcb79f11d7517410d9689de9fbe0f5a9531ea18b6c2d2d7c09191cd0ab7c05456",
+      "address": "0x26639C7378462af908D127b8f329bf124b509310",
+      "txHash": "0x18b61333894e4d5ac0fb9f5440fbf8f8f174d7758bc8fa2fcd1b72ad4f646027",
       "kind": "transparent"
     }
   ],
   "impls": {
     "ecdf583568f3aec0fb97fb2e42765b216843a8a69958b50e95fa667da1f6f236": {
       "address": "0xeecED9eAfa0BA10542DCa67D2CB6Aa014562c24C",
-      "txHash": "0x3411d9b828d757b2d031b8653409e24bf6f48bd82e68131d9a3e7aa4e758d8c1",
+      "txHash": "0xdfd175158ec449a7cc61bbe11830c6880ef3f2d8700ec4e285e08d4ad911cd30",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -118,7 +73,7 @@
             "label": "verifier",
             "offset": 0,
             "slot": "101",
-            "type": "t_contract(IVerifier)3932",
+            "type": "t_contract(IVerifier)5674",
             "contract": "CredentialAtomicQueryMTPValidator",
             "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:14"
           },
@@ -126,7 +81,7 @@
             "label": "state",
             "offset": 0,
             "slot": "102",
-            "type": "t_contract(IState)3907",
+            "type": "t_contract(IState)5649",
             "contract": "CredentialAtomicQueryMTPValidator",
             "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:15"
           },
@@ -156,11 +111,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IState)3907": {
+          "t_contract(IState)5649": {
             "label": "contract IState",
             "numberOfBytes": "20"
           },
-          "t_contract(IVerifier)3932": {
+          "t_contract(IVerifier)5674": {
             "label": "contract IVerifier",
             "numberOfBytes": "20"
           },
@@ -176,8 +131,8 @@
       }
     },
     "a1bb19a3bdea244ed42e7d1ac5310a8a89c04028766d86aef3dcbdc84d2773d0": {
-      "address": "0x9daF11eD636Bc02be5d7e9414Eb8C4f3724CC5DD",
-      "txHash": "0xe15b81d5a83d810ba720c6c1d4c289323f875ad64501162f231b7d750d88a693",
+      "address": "0x86A58f7ab790187BaF9C34DAD23ADfD6AeA4B3Ed",
+      "txHash": "0xdb1f1af835d5eb43b45c30dce39753ef40cca61e49cd4127410692a20fb402a3",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -226,7 +181,7 @@
             "label": "verifier",
             "offset": 0,
             "slot": "101",
-            "type": "t_contract(IVerifier)3932",
+            "type": "t_contract(IVerifier)5674",
             "contract": "CredentialAtomicQuerySigValidator",
             "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:14"
           },
@@ -234,7 +189,7 @@
             "label": "state",
             "offset": 0,
             "slot": "102",
-            "type": "t_contract(IState)3907",
+            "type": "t_contract(IState)5649",
             "contract": "CredentialAtomicQuerySigValidator",
             "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:15"
           },
@@ -264,11 +219,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IState)3907": {
+          "t_contract(IState)5649": {
             "label": "contract IState",
             "numberOfBytes": "20"
           },
-          "t_contract(IVerifier)3932": {
+          "t_contract(IVerifier)5674": {
             "label": "contract IVerifier",
             "numberOfBytes": "20"
           },

@@ -126,6 +126,8 @@ const deploySig = async () => {
   return CredentialAtomicQueryValidatorProxy;
 }
 
+const speedy = false;
+
 const deployMTP = async () => {
   const stateAddress = "0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D"; // current iden3 state smart contract on main
   const verifierContractWrapperName = "VerifierMTPWrapper";
@@ -134,7 +136,7 @@ const deployMTP = async () => {
       verifierContractWrapperName
   );
   const verifierWrapper = await VerifierMTPWrapper.deploy({
-    gasPrice: ethers.utils.parseUnits('200', 'gwei')
+  ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
   });
 
   await verifierWrapper.deployed();
@@ -230,7 +232,7 @@ describe("CampaignMarket", function () {
     const bnty = await BountyCoin.deploy(
       ethers.BigNumber.from("100000000000000000000000000"),
         {
-          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
         }
     );
 
@@ -241,7 +243,7 @@ describe("CampaignMarket", function () {
     const PoseidonUnit6L = await ethers.getContractFactory("PoseidonUnit6L");
     const poseidon6Lib = await PoseidonUnit6L.deploy(
         {
-          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
         });
     await poseidon6Lib.deployed();
 
@@ -254,7 +256,7 @@ describe("CampaignMarket", function () {
 
     const spongePoseidonLib = await SpongePoseidonLib.deploy(
         {
-          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
         });
     await spongePoseidonLib.deployed();
 
@@ -269,7 +271,7 @@ describe("CampaignMarket", function () {
     const campaignMarket = await CampaignMarket.deploy(
       trustedForwarder,
         {
-          gasPrice: ethers.utils.parseUnits('200', 'gwei')
+          ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
         }
     );
 
@@ -279,6 +281,9 @@ describe("CampaignMarket", function () {
 
     // Deploy validators
     const mtpValidator = await deployMTP();
+
+    await new Promise(resolve => setTimeout(resolve, 30000));
+
     const sigValidator = await deploySig();
 
     return { campaignMarket, owner, alice, bob, bnty, mtpValidator, sigValidator };
@@ -312,7 +317,7 @@ describe("CampaignMarket", function () {
           createRequest(mtpValidator.address),
           {
             value: ethers.utils.parseEther('500'),
-            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+            ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
           }
       );
 
@@ -337,7 +342,7 @@ describe("CampaignMarket", function () {
     it("Should be able to add a b w/ arbitrary erc20 token", async () => {
 
       const approveTx = await bnty.approve(campaignMarket.address, ethers.utils.parseEther('50000'), {
-        gasPrice: ethers.utils.parseUnits('200', 'gwei')
+        ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
       });
       await approveTx.wait();
 
@@ -351,7 +356,7 @@ describe("CampaignMarket", function () {
           bnty.address,
           createRequest(mtpValidator.address),
           {
-            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+            ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
           }
       );
 
@@ -383,7 +388,7 @@ describe("CampaignMarket", function () {
           alice.address,
           0,
           {
-            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+            ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
           }
       );
 
@@ -399,7 +404,7 @@ describe("CampaignMarket", function () {
           alice.address,
           1,
           {
-            gasPrice: ethers.utils.parseUnits('200', 'gwei')
+            ...(speedy ? {gasPrice: ethers.utils.parseUnits('200', 'gwei')} : {})
           }
       );
 

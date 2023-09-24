@@ -2,74 +2,24 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0x2181A9713Ef674B10C001D3cF360d77760A30952",
-    "txHash": "0x664ea33e4b1d264447b50182b64a7691114dd9397f1f4d3ab0c97f550c61765a"
+    "txHash": "0x395d8d55e1438e9d999cda9c3818dda572f54587c1fde86ca4fd5715b8e2b702"
   },
   "proxies": [
     {
       "address": "0xC3DCf42828ACE92ceA54B79dBA0Abd3b8bE4ff2d",
-      "txHash": "0x70a6436fc379757803781bba924bab88737582f7299ecb2436583ef78110b071",
+      "txHash": "0x488cf2ee0ddd5997ade12386f19f2448691712418c21c3fb476797e165f44503",
       "kind": "transparent"
     },
     {
-      "address": "0x790475E07AeC14C12Ed29f697767FF927b75Bc11",
-      "txHash": "0x7c2853b002325044089910d1cb364f432c86eefd76f1d0d436e0163d7ea974d8",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x367e3C6F12318F859dF30aaC2026FDAf3B9F8Ce9",
-      "txHash": "0x4f6b1beafdf640de7e4230c017ad349679f722124358eff6567e9b65914dbbac",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xB92f3A12566Be5128C47df3639CAf82231313042",
-      "txHash": "0x92ee794826b3fea56e14e35e4b7edcab503b5db0e3338856a76a05a1b8e6a568",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x303c91187a68bD39f98cAB87d168e5E70dda7E38",
-      "txHash": "0x3179479a6cbf26eb5017f76975c23472b2849a1eca65c4f5e38dd96c4f9e0998",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xbDD8a934Cf6C6CadfE70A0137521c0e010e390Ae",
-      "txHash": "0x4a60db105f09a50c30dfdbf4435351c70e0fa2382a229b3a7ee901f5eab6c919",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x17A0FB3Be197f8f295e563c646B0519f2b1be1C5",
-      "txHash": "0x926def426e385cc480fb50f00c96e74424b21296dc65bf33afd0760cb5146129",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x06114e70CB356D1EB5E9ce970fD861E71C18Fa20",
-      "txHash": "0x4c18735d034c7bd8d87b2dca1d56dc58cd4fd569061e831958a1b294824226e5",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x5Ff5d3bf3b25f551B29EEc62b0F8911727B92180",
-      "txHash": "0x55b4a6d7f4e0e224598684aa13234cc7b11487aa91f33a155f453a2c17f25950",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xd6718E6105fFF7F4aD63e01014E4Ed22d94A0fD5",
-      "txHash": "0xf45045901a6dabe4382797c6184654156bf9fb2394d9dd0349b91b4ea7da6cf5",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xab559cF68b9cF588Ec96b3Fa5d02691155553a94",
-      "txHash": "0xfb6239c3b058e90093185ea446417a7d23efc1dbe81cb60f859a9eda035166ef",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xEC1f49f41A0313c5437Ee399fa44dAFFe56E7eE0",
-      "txHash": "0xcb79f11d7517410d9689de9fbe0f5a9531ea18b6c2d2d7c09191cd0ab7c05456",
+      "address": "0xCfe31FB02cC5fA7727bcbB5c7aBAf3E7540782e8",
+      "txHash": "0xf493ff0954ba563f276f353fafd644e7eac8eefd168b1a7a36d3143d644e5eb2",
       "kind": "transparent"
     }
   ],
   "impls": {
     "ecdf583568f3aec0fb97fb2e42765b216843a8a69958b50e95fa667da1f6f236": {
       "address": "0xeecED9eAfa0BA10542DCa67D2CB6Aa014562c24C",
-      "txHash": "0x3411d9b828d757b2d031b8653409e24bf6f48bd82e68131d9a3e7aa4e758d8c1",
+      "txHash": "0xb41734fe16d970cefc960b4c05dd429dda81106553da2c7e4f62e32aa88babfe",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -118,7 +68,7 @@
             "label": "verifier",
             "offset": 0,
             "slot": "101",
-            "type": "t_contract(IVerifier)3932",
+            "type": "t_contract(IVerifier)5674",
             "contract": "CredentialAtomicQueryMTPValidator",
             "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:14"
           },
@@ -126,7 +76,7 @@
             "label": "state",
             "offset": 0,
             "slot": "102",
-            "type": "t_contract(IState)3907",
+            "type": "t_contract(IState)5649",
             "contract": "CredentialAtomicQueryMTPValidator",
             "src": "contracts/validators/CredentialAtomicQueryMTPValidator.sol:15"
           },
@@ -156,11 +106,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IState)3907": {
+          "t_contract(IState)5649": {
             "label": "contract IState",
             "numberOfBytes": "20"
           },
-          "t_contract(IVerifier)3932": {
+          "t_contract(IVerifier)5674": {
             "label": "contract IVerifier",
             "numberOfBytes": "20"
           },
@@ -176,8 +126,8 @@
       }
     },
     "a1bb19a3bdea244ed42e7d1ac5310a8a89c04028766d86aef3dcbdc84d2773d0": {
-      "address": "0x9daF11eD636Bc02be5d7e9414Eb8C4f3724CC5DD",
-      "txHash": "0xe15b81d5a83d810ba720c6c1d4c289323f875ad64501162f231b7d750d88a693",
+      "address": "0x53Ab5d9413bcce925a4d2f8D7968921e067078b1",
+      "txHash": "0x461ed2b55df30a634cbfa2b420886abb6a5b0382971e8d899522a79fd899c87a",
       "layout": {
         "solcVersion": "0.8.17",
         "storage": [
@@ -226,7 +176,7 @@
             "label": "verifier",
             "offset": 0,
             "slot": "101",
-            "type": "t_contract(IVerifier)3932",
+            "type": "t_contract(IVerifier)5674",
             "contract": "CredentialAtomicQuerySigValidator",
             "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:14"
           },
@@ -234,7 +184,7 @@
             "label": "state",
             "offset": 0,
             "slot": "102",
-            "type": "t_contract(IState)3907",
+            "type": "t_contract(IState)5649",
             "contract": "CredentialAtomicQuerySigValidator",
             "src": "contracts/validators/CredentialAtomicQuerySigValidator.sol:15"
           },
@@ -264,11 +214,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IState)3907": {
+          "t_contract(IState)5649": {
             "label": "contract IState",
             "numberOfBytes": "20"
           },
-          "t_contract(IVerifier)3932": {
+          "t_contract(IVerifier)5674": {
             "label": "contract IVerifier",
             "numberOfBytes": "20"
           },

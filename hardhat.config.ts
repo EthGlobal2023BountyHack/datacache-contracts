@@ -29,6 +29,13 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 31337,
     },
+    'base-mainnet': {
+      url: 'https://mainnet.base.org',
+      accounts:
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: 1000000000,
+      chainId: 8453
+    },
     goerli: {
       url: process.env.GOERLI_URL || "",
       accounts:
@@ -60,6 +67,18 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.2,
       chainId: 80001,
     },
+    "scroll-sep": {
+      url: "https://sepolia-rpc.scroll.io",
+      accounts:
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      chainId: 534351,
+    },
+    "mantle": {
+      url: "https://rpc.mantle.xyz",
+      accounts:
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      chainId: 5000,
+    }
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
@@ -75,8 +94,46 @@ const config: HardhatUserConfig = {
       mainnet: process.env.ETHERSCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
       polygon: process.env.POLYGON_API_KEY || "",
-      polygonMumbai: process.env.POLYGON_API_KEY || ""
+      polygonMumbai: process.env.POLYGON_API_KEY || "",
+      zk: process.env.ZK_API_KEY || "",
+      "base-mainnet": process.env.BASE_API_KEY || "",
+      "scroll-sep": process.env.SCROLL_API_KEY || "",
+      "mantle": process.env.MANTLE_API_KEY || "",
     },
+    customChains: [
+      {
+        network: "zk",
+        chainId: 1101,
+        urls: {
+          apiURL: "https://api-zkevm.polygonscan.com/api",
+          browserURL: "https://zkevm.polygonscan.com"
+        }
+      },
+      {
+        network: "base-mainnet",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
+      },
+      {
+        network: "scroll-sep",
+        chainId: 534351,
+        urls: {
+          apiURL: "https://api-sepolia.scrollscan.dev/api",
+          browserURL: "https://sepolia.scrollscan.dev"
+        }
+      },
+      {
+        network: "mantle",
+        chainId: 5000,
+        urls: {
+          apiURL: "https://explorer.mantle.xyz/api-docs",
+          browserURL: "https://explorer.mantle.xyz"
+        }
+      }
+    ]
   },
   mocha: {
     timeout: 12000000,
